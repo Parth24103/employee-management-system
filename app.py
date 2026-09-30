@@ -147,7 +147,7 @@ def employee_details(employee_id):
 
     return render_template("employee_details.html", employee=employee)
 
+init_db()
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
