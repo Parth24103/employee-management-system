@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Employees{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+        <h2>Employees</h2>
+        <p class="text-muted mb-0">Manage your employee records.</p>
+    </div>
+</div>
+
+<form method="GET" action="{{ url_for('index') }}" class="search-form mb-4">
+    <input type="text" name="search" class="form-control"
+           placeholder="Search by name, email, department or position..."
+           value="{{ search }}">
+    <button class="btn btn-primary">Search</button>
+</form>
+
+{% if employees %}
+<div class="table-wrapper">
+<table class="table table-hover align-middle mb-0 bg-white mobile-table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th><th>Name</th><th>Email</th><th>Department</th>
+            <th>Position</th><th>Salary</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for employee in employees %}
+        <tr>
+            <td data-label="ID">{{ employee["id"] }}</td>
+            <td data-label="Name">{{ employee["name"] }}</td>
+            <td data-label="Email">{{ employee["email"] }}</td>
+            <td data-label="Department">{{ employee["department"] }}</td>
+            <td data-label="Position">{{ employee["position"] }}</td>
+            <td data-label="Salary">₹{{ "%.2f"|format(employee["salary"]) }}</td>
+            <td data-label="Actions">
+                <div class="action-buttons">
+                    <a href="{{ url_for('employee_details', employee_id=employee['id']) }}"
+                       class="btn btn-sm btn-outline-primary">View</a>
+                    <a href="{{ url_for('edit_employee', employee_id=employee['id']) }}"
+                       class="btn btn-sm btn-outline-warning">Edit</a>
+                    <form method="POST"
+                          action="{{ url_for('delete_employee', employee_id=employee['id']) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Delete this employee?');">
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">
+    <h4>No employees found</h4>
+    <p class="text-muted">Add your first employee to get started.</p>
+    <a href="{{ url_for('add_employee') }}" class="btn btn-primary">Add Employee</a>
+</div>
+{% endif %}
+{% endblock %}
